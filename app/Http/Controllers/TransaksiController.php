@@ -87,7 +87,8 @@ class TransaksiController extends ApiController
 
     public function inputTransaksi(Request $request){
         $transaksi = new Transaksi;
-
+        $id = Transaksi::orderBy('id', 'desc')->first();
+        $total_id = $id->id + 1;
         $transaksi->kategori_id = $request->input('kategori_id');
         $transaksi->sub_kategori_id = $request->input('sub_kategori_id');
         $transaksi->tipe_transaksi = $request->input('tipe_transaksi');
@@ -99,7 +100,7 @@ class TransaksiController extends ApiController
         $ext = $transaksi->bukti_transaksi->getClientOriginalExtension();
 
         if($request->file('bukti_transaksi')->isValid()){
-            $foto_name = date('YmdHis') . ".$ext";
+            $foto_name = date('YmdHis') . "_transaksi_" . $total_id . ".$ext";
             $upload_path = 'image';
             $transaksi->bukti_transaksi = $request->file('bukti_transaksi')->move($upload_path, $foto_name);
         }
@@ -114,5 +115,17 @@ class TransaksiController extends ApiController
                     "tanggal_transaksi" => $transaksi->tanggal_transaksi,
                 ]
              ];
+    }
+
+    public function requestGambar($id){
+        $transaksi = Transaksi::where('id', $id)->first();
+        $asset = asset($transaksi->bukti_transaksi);
+        $transaksiGambar = url($asset);
+        $transaksis = [
+            'data' => [
+                'gambar' => $transaksiGambar,
+            ]
+        ];
+        return $transaksis;
     }
 }

@@ -24,6 +24,7 @@ $api->version('v1',function ($api) {
     $api->get('transaksi/{id}', 'App\Http\Controllers\TransaksiController@show');
     $api->get('transaksi/pemasukan/total', 'App\Http\Controllers\TransaksiController@totalPemasukan');
     $api->get('transaksi/pengeluaran/total', 'App\Http\Controllers\TransaksiController@totalPengeluaran');
+     $api->get('transaksi/gambar/{id}', 'App\Http\Controllers\TransaksiController@requestGambar');
     $api->post('transaksi', 'App\Http\Controllers\TransaksiController@inputTransaksi');
 
     $api->get('kategori/pemasukan', 'App\Http\Controllers\KategoriController@kategoriPemasukan');
