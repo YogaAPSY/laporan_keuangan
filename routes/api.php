@@ -17,6 +17,7 @@ $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1',function ($api) {
     $api->get('transaksi/semua', 'App\Http\Controllers\TransaksiController@index');
+    $api->get('transaksi/perpage', 'App\Http\Controllers\TransaksiController@transaksiPerpage');
     $api->get('transaksi/pemasukan', 'App\Http\Controllers\TransaksiController@semuaPemasukan');
     $api->get('transaksi/pengeluaran', 'App\Http\Controllers\TransaksiController@semuaPengeluaran');
     $api->get('transaksi/hutang', 'App\Http\Controllers\TransaksiController@semuaHutang');
