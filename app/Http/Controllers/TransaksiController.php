@@ -13,7 +13,13 @@ class TransaksiController extends ApiController
 {
     public function index(){
 
-       $transaksi = Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->get();
+        if(isset($_GET['start_date']) && isset($_GET['end_date'])){
+        $startDate = $_GET['start_date'];
+        $endDate = $_GET['end_date'];
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->get();
+       } else {
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->get();
+       }
 
        return $this->response->collection($transaksi , new TransaksiTransformer);
     }
@@ -27,24 +33,45 @@ class TransaksiController extends ApiController
 
     public function semuaPemasukan(){
 
-        $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 0)
-        ->orderBy('id', 'desc')->get();
-
+        if(isset($_GET['start_date']) && isset($_GET['end_date'])){
+        $startDate = $_GET['start_date'];
+        $endDate = $_GET['end_date'];
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 0)
+            ->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->get();
+       } else {
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 0)
+            ->orderBy('id', 'desc')->get();
+       }
         return $this->response->collection($transaksi , new TransaksiTransformer);
 
     }
 
      public function semuaPengeluaran(){
 
-        $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 1)
-        ->orderBy('id', 'desc')->get();
+        if(isset($_GET['start_date']) && isset($_GET['end_date'])){
+        $startDate = $_GET['start_date'];
+        $endDate = $_GET['end_date'];
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 1)
+            ->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->get();
+       } else {
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 0)
+            ->orderBy('id', 'desc')->get();
+       }
+        return $this->response->collection($transaksi , new TransaksiTransformer);
 
         return $this->response->collection($transaksi , new TransaksiTransformer);
 
     }
 
      public function semuaHutang(){
+
+        if(isset($_GET['start_date']) && isset($_GET['end_date'])){
+        $startDate = $_GET['start_date'];
+        $endDate = $_GET['end_date'];
+        $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 0)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label as kategori_label', 'sub_kategori.label as sub_kategori_label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->whereBetween('transaksi.tanggal_transaksi', [$startDate , $endDate])->orderBy('transaksi.id', 'desc')->get();
+       } else {
         $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 0)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label as kategori_label', 'sub_kategori.label as sub_kategori_label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->orderBy('transaksi.id', 'desc')->get();
+       }
 
         $transaksis = ['data' => $transaksi];
         return $transaksis;
@@ -53,8 +80,16 @@ class TransaksiController extends ApiController
 
       public function semuaPiutang(){
 
-             $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 1)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label', 'sub_kategori.label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->orderBy('transaksi.id', 'desc')->get();
-                 return $transaksi;
+        if(isset($_GET['start_date']) && isset($_GET['end_date'])){
+        $startDate = $_GET['start_date'];
+        $endDate = $_GET['end_date'];
+        $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 1)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label as kategori_label', 'sub_kategori.label as sub_kategori_label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->whereBetween('transaksi.tanggal_transaksi', [$startDate , $endDate])->orderBy('transaksi.id', 'desc')->get();
+       } else {
+        $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 0)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label as kategori_label', 'sub_kategori.label as sub_kategori_label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->orderBy('transaksi.id', 'desc')->get();
+       }
+
+        $transaksis = ['data' => $transaksi];
+        return $transaksis;
     }
 
     public function totalPemasukan(){
@@ -121,11 +156,7 @@ class TransaksiController extends ApiController
         $transaksi = Transaksi::where('id', $id)->first();
         $asset = asset($transaksi->bukti_transaksi);
         $transaksiGambar = url($asset);
-        $transaksis = [
-            'data' => [
-                'gambar' => $transaksiGambar,
-            ]
-        ];
-        return $transaksis;
+
+        return $transaksiGambar;
     }
 }
