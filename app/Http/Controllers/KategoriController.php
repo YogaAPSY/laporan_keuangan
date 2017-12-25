@@ -35,8 +35,10 @@ class KategoriController extends ApiController
         return $kategoris;
     }
 
-    public function subKategori(){
-        $subKategori = SubKategori::where('sub_kategori_id');
+    public function subKategori($id){
+        $subKategori = SubKategori::where('sub_kategori_id', $id)->get();
+        $subKategoris = ['data' => $subKategori];
+        return $subKategoris;
     }
 
     public function totalPemasukanPerkategori(){
