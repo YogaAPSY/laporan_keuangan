@@ -54,7 +54,7 @@ class TransaksiController extends ApiController
             $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 1)
             ->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->get();
        } else {
-            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 0)
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('tipe_transaksi', 1)
             ->orderBy('id', 'desc')->get();
        }
         return $this->response->collection($transaksi , new TransaksiTransformer);
