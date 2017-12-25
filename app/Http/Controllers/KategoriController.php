@@ -36,21 +36,22 @@ class KategoriController extends ApiController
     }
 
     public function subKategori($id){
-        $subKategori = SubKategori::where('sub_kategori_id', $id)->get();
+        $subKategori = SubKategori::where('sup_id', $id)->get();
         $subKategoris = ['data' => $subKategori];
         return $subKategoris;
     }
 
     public function totalPemasukanPerkategori(){
-        $totalPemasukan = Transaksi::where('tipe_transaksi', 0)->orderBy('kategori_id')->get();
 
-        return $this->response->collection($totalPemasukan , new KategoriTransformer);
+      $totalPemasukan = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->select('kategori.kategori_id', 'kategori.kategori_id', 'kategori.label as kategori_label', DB::raw('SUM(transaksi.jumlah_uang) as jumlah_uang'))->where('tipe_transaksi', 0)->orderBy('kategori_id')->groupBy('kategori_id')->get();
+        $total = ['data' => $totalPemasukan];
+        return $total;
     }
 
     public function totalPengeluaranPerkategori(){
-        $totalPemasukan = Transaksi::where('tipe_transaksi', 1)->orderBy('kategori_id')->get();
-
-        return $this->response->collection($totalPemasukan , new KategoriTransformer);
+          $totalPemasukan = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->select('kategori.kategori_id', 'kategori.kategori_id', 'kategori.label as kategori_label', DB::raw('SUM(transaksi.jumlah_uang) as jumlah_uang'))->where('tipe_transaksi', 1)->orderBy('kategori_id')->groupBy('kategori_id')->get();
+        $total = ['data' => $totalPemasukan];
+        return $total;
     }
 
     public function inputKategori (Request $request){
