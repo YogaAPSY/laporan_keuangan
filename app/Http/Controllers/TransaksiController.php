@@ -94,6 +94,15 @@ class TransaksiController extends ApiController
         $transaksi->jumlah_uang = $request->input('jumlah_uang');
         $transaksi->tanggal_transaksi = $request->input('tanggal_transaksi');
         $transaksi->catatan = $request->input('catatan');
+        $transaksi->bukti_transaksi = $request->file('bukti_transaksi');
+
+        $ext = $transaksi->bukti_transaksi->getClientOriginalExtension();
+
+        if($request->file('bukti_transaksi')->isValid()){
+            $foto_name = date('YmdHis') . ".$ext";
+            $upload_path = 'image';
+            $transaksi->bukti_transaksi = $request->file('bukti_transaksi')->move($upload_path, $foto_name);
+        }
 
         $transaksi->save();
 
