@@ -213,7 +213,5 @@ class TransaksiController extends ApiController
             "updated_at" => $transaksi->updated_at,
         ]
      ];
-=======
->>>>>>> 2579a5c717152ff7b0061011bb7f1f92c623f1fb
     }
 }
