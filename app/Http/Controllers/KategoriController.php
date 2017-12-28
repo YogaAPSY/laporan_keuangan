@@ -88,4 +88,34 @@ class KategoriController extends ApiController
                 ]
              ];
     }
+
+  public function updateKategori(Request $request, $id) {
+      $kategori = Kategori::find($id);
+      $kategori->label = $request->input('label');
+
+      $kategori->update();
+
+     return [
+        "data" => [
+            "message" => "success",
+            "status_code" => 1,
+            "updated_at" => $kategori->updated_at,
+        ]
+     ];
+    }
+
+  public function updateSubKategori(Request $request, $id) {
+    $kategori = SubKategori::find($id);
+    $kategori->label = $request->input('label');
+
+    $kategori->update();
+
+    return [
+        "data" => [
+            "message" => "success",
+            "status_code" => 1,
+            "updated_at" => $kategori->updated_at,
+        ]
+     ];
+  }
 }

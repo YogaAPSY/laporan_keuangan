@@ -27,6 +27,7 @@ $api->version('v1',function ($api) {
     $api->get('transaksi/pengeluaran/total', 'App\Http\Controllers\TransaksiController@totalPengeluaran');
      $api->get('transaksi/gambar/{id}', 'App\Http\Controllers\TransaksiController@requestGambar');
     $api->post('transaksi', 'App\Http\Controllers\TransaksiController@inputTransaksi');
+    $api->put('transaksi/ubah/{id}', 'App\Http\Controllers\TransaksiController@updateTransaksi');
 
     $api->get('kategori/pemasukan', 'App\Http\Controllers\KategoriController@kategoriPemasukan');
      $api->get('kategori/{id}/sub', 'App\Http\Controllers\KategoriController@subKategori');
@@ -35,6 +36,8 @@ $api->version('v1',function ($api) {
     $api->get('kategori/pengeluaran/total', 'App\Http\Controllers\KategoriController@totalPengeluaranPerkategori');
     $api->post('kategori', 'App\Http\Controllers\KategoriController@inputKategori');
     $api->post('kategori/sub', 'App\Http\Controllers\KategoriController@inputSubKategori');
+    $api->put('kategori/{id}/ubah', 'App\Http\Controllers\KategoriController@updateKategori');
+    $api->put('kategori/sub/{id}/ubah', 'App\Http\Controllers\KategoriController@updateSubKategori');
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

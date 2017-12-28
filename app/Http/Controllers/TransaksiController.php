@@ -103,7 +103,7 @@ class TransaksiController extends ApiController
         $endDate = $_GET['end_date'];
         $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 1)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label as kategori_label', 'sub_kategori.label as sub_kategori_label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->whereBetween('transaksi.tanggal_transaksi', [$startDate , $endDate])->orderBy('transaksi.id', 'desc')->paginate(25);
        } else {
-        $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 0)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label as kategori_label', 'sub_kategori.label as sub_kategori_label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->orderBy('transaksi.id', 'desc')->paginate(25);
+        $transaksi = DB::table('transaksi')->leftJoin('kategori', 'transaksi.kategori_id', '=', 'kategori.kategori_id')->leftJoin('sub_kategori', 'transaksi.sub_kategori_id', '=', 'sub_kategori.sub_kategori_id' ,'or', 'transaksi.sub_kategori_id', '=', 0)->where('transaksi.tipe_transaksi', '=', 1)->select('transaksi.id', 'transaksi.tanggal_transaksi','transaksi.kategori_id', 'transaksi.sub_kategori_id', 'kategori.label as kategori_label', 'sub_kategori.label as sub_kategori_label', 'transaksi.jumlah_uang', 'transaksi.catatan', 'transaksi.tipe_transaksi', 'kategori.termasuk_hutang_piutang')->Where('kategori.termasuk_hutang_piutang', '=', 1)->orderBy('transaksi.id', 'desc')->paginate(25);
        }
 
         $transaksis = ['data' => $transaksi];
@@ -141,7 +141,10 @@ class TransaksiController extends ApiController
     public function inputTransaksi(Request $request){
         $transaksi = new Transaksi;
         $id = Transaksi::orderBy('id', 'desc')->first();
-        $total_id = $id->id + 1;
+        $total_id = 1;
+        if(isset($id)){
+            $total_id = $id->id + 1;
+        }
         $transaksi->kategori_id = $request->input('kategori_id');
         $transaksi->sub_kategori_id = $request->input('sub_kategori_id');
         $transaksi->tipe_transaksi = $request->input('tipe_transaksi');
@@ -180,5 +183,34 @@ class TransaksiController extends ApiController
                     "gambar" => $transaksiGambar,
                 ]
              ];
+    }
+
+    public function updateTransaksi($id, Request $request){
+        $transaksi = Transaksi::find($id);
+
+        $transaksi->kategori_id = $request->input('kategori_id');
+        $transaksi->sub_kategori_id = $request->input('sub_kategori_id');
+        $transaksi->tipe_transaksi = $request->input('tipe_transaksi');
+        $transaksi->jumlah_uang = $request->input('jumlah_uang');
+        $transaksi->tanggal_transaksi = $request->input('tanggal_transaksi');
+        $transaksi->catatan = $request->input('catatan');
+        $transaksi->bukti_transaksi = $request->file('bukti_transaksi');
+
+        $ext = $transaksi->bukti_transaksi->getClientOriginalExtension();
+
+        if($request->file('bukti_transaksi')->isValid()){
+            $foto_name = date('YmdHis') . "_transaksi_" . $id . ".$ext";
+            $upload_path = 'image';
+            $transaksi->bukti_transaksi = $request->file('bukti_transaksi')->move($upload_path, $foto_name);
+        }
+        $transaksi->update();
+
+       return [
+        "data" => [
+            "message" => "success",
+            "status_code" => 1,
+            "updated_at" => $transaksi->updated_at,
+        ]
+     ];
     }
 }

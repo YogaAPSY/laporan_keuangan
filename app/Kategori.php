@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Kategori extends Model
 {
     protected $table = 'kategori';
-
+    protected $primaryKey = 'kategori_id';
     public function transaksis(){
         return $this->belongsTo(Transaksi::class, 'kategori_id', 'kategori_id');
     }
