@@ -19,13 +19,9 @@ class TransaksiController extends ApiController
         $startDate = $_GET['start_date'];
         $endDate = $_GET['end_date'];
 
-            $transaksi = Cache::remember('transaksi', $expiresAt, function() use ($startDate , $endDate){
-                return  Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->get();
-            });
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->get();
        } else {
-            $transaksi =  Cache::remember('transaksi', $expiresAt, function(){
-                return Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->get();
-            });
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->get();
        }
 
        return $this->response->collection($transaksi , new TransaksiTransformer);
@@ -140,11 +136,15 @@ class TransaksiController extends ApiController
 
     public function inputTransaksi(Request $request){
         $transaksi = new Transaksi;
+        $total_id = 0;
+
         $id = Transaksi::orderBy('id', 'desc')->first();
+
         $total_id = 1;
         if(isset($id)){
             $total_id = $id->id + 1;
         }
+
         $transaksi->kategori_id = $request->input('kategori_id');
         $transaksi->sub_kategori_id = $request->input('sub_kategori_id');
         $transaksi->tipe_transaksi = $request->input('tipe_transaksi');
@@ -178,11 +178,12 @@ class TransaksiController extends ApiController
         $asset = asset($transaksi->bukti_transaksi);
         $transaksiGambar = url($asset);
 
-              return [
-                "data" => [
-                    "gambar" => $transaksiGambar,
-                ]
-             ];
+        return [
+            "data" => [
+                "gambar" => $transaksiGambar,
+            ]
+        ];
+
     }
 
     public function updateTransaksi($id, Request $request){
@@ -212,5 +213,7 @@ class TransaksiController extends ApiController
             "updated_at" => $transaksi->updated_at,
         ]
      ];
+=======
+>>>>>>> 2579a5c717152ff7b0061011bb7f1f92c623f1fb
     }
 }
