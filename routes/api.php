@@ -28,6 +28,7 @@ $api->version('v1',function ($api) {
      $api->get('transaksi/gambar/{id}', 'App\Http\Controllers\TransaksiController@requestGambar');
     $api->post('transaksi', 'App\Http\Controllers\TransaksiController@inputTransaksi');
     $api->put('transaksi/ubah/{id}', 'App\Http\Controllers\TransaksiController@updateTransaksi');
+     $api->post('transaksi/gambar/update/{id}', 'App\Http\Controllers\TransaksiController@updateGambarTransaksi');
 
     $api->get('kategori/pemasukan', 'App\Http\Controllers\KategoriController@kategoriPemasukan');
      $api->get('kategori/{id}/sub', 'App\Http\Controllers\KategoriController@subKategori');

@@ -6,10 +6,11 @@ use App\Kategori;
 use App\Transaksi;
 use App\Transformers\TransaksiTransformer;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Http\response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class TransaksiController extends ApiController
 {
@@ -195,15 +196,6 @@ class TransaksiController extends ApiController
         $transaksi->jumlah_uang = $request->input('jumlah_uang');
         $transaksi->tanggal_transaksi = $request->input('tanggal_transaksi');
         $transaksi->catatan = $request->input('catatan');
-        $transaksi->bukti_transaksi = $request->file('bukti_transaksi');
-
-        $ext = $transaksi->bukti_transaksi->getClientOriginalExtension();
-
-        if($request->file('bukti_transaksi')->isValid()){
-            $foto_name = date('YmdHis') . "_transaksi_" . $id . ".$ext";
-            $upload_path = 'image';
-            $transaksi->bukti_transaksi = $request->file('bukti_transaksi')->move($upload_path, $foto_name);
-        }
         $transaksi->update();
 
        return [
@@ -213,7 +205,32 @@ class TransaksiController extends ApiController
             "updated_at" => $transaksi->updated_at,
         ]
      ];
-=======
->>>>>>> 2579a5c717152ff7b0061011bb7f1f92c623f1fb
+    }
+
+    public function updateGambarTransaksi(Request $request, $id){
+
+        $transaksi = Transaksi::find($id);
+
+        File::delete($transaksi->bukti_transaksi);
+
+        $transaksi->bukti_transaksi = $request->file('bukti_transaksi');
+
+        $ext = $transaksi->bukti_transaksi->getClientOriginalExtension();
+
+        if($request->file('bukti_transaksi')->isValid()){
+            $foto_name = date('YmdHis') . "_transaksi_" . $id . ".$ext";
+            $upload_path = 'image';
+            $transaksi->bukti_transaksi = $request->file('bukti_transaksi')->move($upload_path, $foto_name);
+        }
+
+       $transaksi->save();
+
+       return [
+        "data" => [
+            "message" => "success",
+            "status_code" => 1,
+            "updated_at" => $transaksi->updated_at,
+        ]
+     ];
     }
 }
