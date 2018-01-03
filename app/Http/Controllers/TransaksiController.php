@@ -25,7 +25,7 @@ class TransaksiController extends ApiController
             ->whereBetween('tanggal_transaksi', [$startDate , $endDate])->get();
        } else {
             $transaksi = Transaksi::with('kategoris', 'subkategoris', 'projects')
-            ->orderBy('id', 'desc')->get();
+            ->where('project_id', $project)->orderBy('id', 'desc')->get();
        }
 
        return $this->response->collection($transaksi , new TransaksiTransformer);
@@ -36,7 +36,7 @@ class TransaksiController extends ApiController
         if(isset($_GET['start_date']) && isset($_GET['end_date'])){
         $startDate = $_GET['start_date'];
         $endDate = $_GET['end_date'];
-            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where($project , 'project_id')->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->paginate(25);
+            $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('project_id', $project)->orderBy('id', 'desc')->whereBetween('tanggal_transaksi', [$startDate , $endDate])->paginate(25);
        } else {
             $transaksi = Transaksi::with('kategoris', 'subkategoris')->where('project_id', $project)->orderBy('id', 'desc')->paginate(25);
        }
@@ -46,7 +46,7 @@ class TransaksiController extends ApiController
 
     public function show($id){
 
-        $transaksi = Transaksi::with('kategoris', 'subkategoris')->orderBy('id', 'desc')->where('id', $id)->first();
+        $transaksi = Transaksi::with('kategoris', 'subkategoris', 'projects')->orderBy('id', 'desc')->where('id', $id)->first();
 
         return $this->response->item($transaksi , new TransaksiTransformer);
     }
