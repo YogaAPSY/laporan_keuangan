@@ -9,22 +9,28 @@ use Illuminate\Http\Request;
 class ProjectController extends ApiController
 {
     public function login(Request $request){
-      $user = $request->input('username');
-      $password = $request->input('password');
 
-        $appUser = explode(',', config('keuangan.username'));
-        $appPass = explode(',', config('keuangan.password'));
-        if( in_array($user , $appUser) && in_array($password, $appPass)) {
-             return [
+        $user = $request->input('username');
+        $pass = $request->input('password');
+
+        $account = Account::where('username', $user)->where('password', $pass)->first();
+
+        if(isset($account)){
+              return [
                 "data" => [
-                    "message" => "success",
+                    "message" => "login success",
                     "status_code" => 1,
                     "username" => $user,
                 ]
              ];
-        } else {
-            return $this->response->errorInternal($e->getMessage());
-        }
+         } else {
+              return [
+                "data" => [
+                    "message" => "login failed",
+                    "status_code" => 0,
+                ]
+             ];
+         }
     }
     public function inputProject(Request $request){
 
