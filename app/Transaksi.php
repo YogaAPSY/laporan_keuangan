@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Kategori;
+use App\Project;
 use App\SubKategori;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,5 +17,9 @@ class Transaksi extends Model
 
     public function subkategoris(){
         return $this->hasMany(SubKategori::class, 'sub_kategori_id', 'sub_kategori_id');
+    }
+
+    public function projects(){
+        return $this->hasMany(Project::class, 'project_id', 'project_id');
     }
 }

@@ -19,6 +19,11 @@ class TransaksiTransformer extends TransformerAbstract
         foreach ($transaksi->subkategoris as $subkategori) {
             $subkategoriss = $subkategori->label;
         }
+
+        $projectss = "";
+        foreach ($transaksi->projects as $project) {
+            $projectss = $project->label;
+        }
         return [
             'id' => $transaksi->id,
             'tanggal_transaksi' => $transaksi->tanggal_transaksi,
@@ -30,6 +35,8 @@ class TransaksiTransformer extends TransformerAbstract
             'termasuk_hutang_piutang' => $piutang,
             'sub_kategori_id' => $transaksi->sub_kategori_id,
             'sub_kategori_label' => $subkategoriss,
+            'project_id' => $transaksi->project_id,
+            'project_label' => $projectss
         ];
     }
 }
