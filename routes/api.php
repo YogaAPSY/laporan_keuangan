@@ -37,8 +37,8 @@ $api->version('v1',function ($api) {
     $api->get('kategori/pemasukan', 'App\Http\Controllers\KategoriController@kategoriPemasukan');
      $api->get('kategori/{id}/sub', 'App\Http\Controllers\KategoriController@subKategori');
     $api->get('kategori/pengeluaran', 'App\Http\Controllers\KategoriController@kategoriPengeluaran');
-    $api->get('kategori/pemasukan/total', 'App\Http\Controllers\KategoriController@totalPemasukanPerkategori');
-    $api->get('kategori/pengeluaran/total', 'App\Http\Controllers\KategoriController@totalPengeluaranPerkategori');
+    $api->get('kategori/pemasukan/total/{project}', 'App\Http\Controllers\KategoriController@totalPemasukanPerkategori');
+    $api->get('kategori/pengeluaran/total/{project}', 'App\Http\Controllers\KategoriController@totalPengeluaranPerkategori');
     $api->post('kategori', 'App\Http\Controllers\KategoriController@inputKategori');
     $api->post('kategori/sub', 'App\Http\Controllers\KategoriController@inputSubKategori');
     $api->put('kategori/{id}/ubah', 'App\Http\Controllers\KategoriController@updateKategori');
