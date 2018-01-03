@@ -32,6 +32,7 @@ $api->version('v1',function ($api) {
      $api->post('transaksi/gambar/update/{id}', 'App\Http\Controllers\TransaksiController@updateGambarTransaksi');
 
     $api->post('project/input', 'App\Http\Controllers\ProjectController@inputProject');
+    $api->get('project', 'App\Http\Controllers\ProjectController@index');
 
     $api->get('kategori/pemasukan', 'App\Http\Controllers\KategoriController@kategoriPemasukan');
      $api->get('kategori/{id}/sub', 'App\Http\Controllers\KategoriController@subKategori');

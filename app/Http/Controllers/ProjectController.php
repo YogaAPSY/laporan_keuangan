@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Account;
 use App\Project;
+use App\Transformers\ProjectTransformer;
 use Illuminate\Http\Request;
 
 class ProjectController extends ApiController
 {
+    public function index(){
+        $project = Project::all();
+
+        return $this->response->collection($project , new ProjectTransformer);
+    }
+
     public function login(Request $request){
 
         $user = $request->input('username');
